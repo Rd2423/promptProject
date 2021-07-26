@@ -1,15 +1,19 @@
 // TODO: Include packages needed for this application
 
+const path = require('path');
 const inquirer = require("inquirer");
 const markDown = require('./utils/generateMarkdown');
 const fs = require("fs");
 
 
+
+
 // TODO: Create an array of questions for user input
-// function askQuestion(){
+function askQuestion(){
 
+const answers = [];
 
-const promptUser = 
+ inquirer.prompt(
   [
     {
       type:'input',
@@ -77,42 +81,59 @@ const promptUser =
       type: 'confirm',
       name: 'license',
       message: 'Would you like to be provided with a license',
-      validate: licenseChoice => {
-        if(licenseChoice) {
-          return true;
-        } else{
-          return false
-        }
-      }
+      // validate: licenseChoice => {
+      //   if(licenseChoice) {
+      //     return true;
+      //   } else{
+      //     return false
+      //   }
+      // }
     }
-  ]
+  ])
+  .then(responses => {
+    console.log(responses)
+    const newMarkDown = markDown(responses)
+    console.log(newMarkDown);
+    writeToFile('readme.md', newMarkDown)
+    // const data = [];
+    // data.push(responses).then(data => {
+    //   return markDown(data);
+    // })
+    
+  })
+}
 
-  
+
+ 
 
 
 
 
 // TODO: Create a function to write README file
-function writeReadMe (file, data) {
-  // const pageReadMe = markDown(readme)
-  fs.writeToFile(file, data, function(err){
-    if(err) {
-      return console.log(err);
-    }
-    console.log('Heres your portfolio');
-  }) 
-} 
+// function writeReadMe (filename, data) {
+//   // const pageReadMe = markDown(readme)
+//   fs.writeToFile("./ReadMe/readme.md", filename, function(err){
+//     if(err) {
+//       console.log(err);
+//     }
+//     console.log('File created')
+//   }) 
+// }
+
+function writeToFile(fileName, data) {
+  return fs.writeFileSync(path.join(process.cwd(), fileName), data);
+}
 
 
 // TODO: Create a function to initialize app
 function init() {
-  // askQuestion()
-  inquirer.prompt(promptUser).then(inquirerReponses => console.log(inquirerReponses))
-  // .then(function(data){
-  //   writeToFile(markDown(data));
-  // });
+  askQuestion()
+  // const allanswers = askQuestion;
+  // writeReadMe(readmeAnswers)
 }
-
+// function writeFile(){
+//   writeReadMe();
+// }
 // Function call to initialize app
-init();
-module.exports = index;
+init()
+// module.exports = index;
